@@ -47,7 +47,7 @@ hostname = api.langooo.com
 const $ = new Env('朗果英语');
 let status;
 status = (status = ($.getval("lgyystatus") || "1") ) > 1 ? `${status}` : ""; // 账号扩展字符
-const lgyyurlArr = [], lgyyhdArr = [],lgyybodyArr = [],lgyycount = ''
+const lgyyurlArr = [http://api.langooo.com/task/daily/taskList], lgyyhdArr = [{"Connection":"keep-alive","uid":"135411","Accept-Encoding":"gzip, deflate","UMDeviceToken":"e644237e138271a20fe9a26a3d8d8a418f203f8be0802b5fa98bd5720944e680","deviceToken":"6052069B-70D2-433C-B21B-9281A92194E1","Content-Type":"application/json","versionName":"3.8.1","User-Agent":"Langooo/3.8.1 (iPhone; iOS 14.5; Scale/2.00)","token":"705c791a-0621-4ef0-9ef7-52adba56da4f","versionCode":"76","Host":"api.langooo.com","Accept-Language":"zh-Hans-CN;q=1","Accept":"*/*","Content-Length":"34"}],lgyybodyArr = [{"uid":"135411","channelNumber":2}],lgyycount = ''
 let times = Math.round(Date.now()/ 1000)
 let lgyyurl = $.getdata('lgyyurl')
 let lgyyhd = $.getdata('lgyyhd')
