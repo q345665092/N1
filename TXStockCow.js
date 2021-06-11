@@ -12,19 +12,19 @@ const notifyInterval = 1; //0为关闭通知，1为所有通知,默认为0
 let rndtime = Math.round(new Date().getTime()) //毫秒
 let signday = formatDateTime(new Date());
 let tz = '';
-let cash = $.getval('cash') || 0; //0为不自动提现,1为自动提现1元,5为自动提现1元,
+let cash = $.getval('cash') || 5; //0为不自动提现,1为自动提现1元,5为自动提现1元,
 
 const userheaderArr = [];
 let userheaderVal = "";
-let USERHEADER = [];
+let USERHEADER = [oA0GbjsGpgLi0Rv5xSS_gDxJYyTc&_appName=ios&_dev=iPhone12,1&_devId=4a558f7b937fae53e9b125434a4a109281a8dece&_appver=8.7.1&_ifChId=&_isChId=1&_osVer=14.3&openid=oA0GbjsGpgLi0Rv5xSS_gDxJYyTc&fskey=v0aaf8a82206004f370514b304d57477&appid=wxcbc3ab3807acb685&access_token=41_fQ08mc0VUx7OTZAjRwzzkKCJEXALfTRwW84eM-jb5svc2YqeQ7v0mVI76uqHzsdQ9R-7doK9K_hiu1n-Eax2b4wnzTBO9bgZGOYtpFaEB9U&buildType=store&check=11&_idfa=D22DD681-6CEB-42F3-9077-6FE02150ECD0&lang=zh_CN];
 
 const userkeyArr = [];
 let userkeyVal = "";
-let USERKEY = [];
+let USERKEY = [pgv_pvid=3244437094; ts_last=/mp/v2/index.html; ts_sid=4103207880; ts_uid=7284412760];
 
 const signheaderArr = [];
 let signheaderVal = "";
-let SINGHEADER = [];
+let SINGHEADER = [_request_from=web&version_code=13.2.0&js_sdk_version=1.77.0.2&tma_jssdk_version=1.77.0.2&app_name=douyin_lite&app_version=13.2.0&vid=7BA0FA92-A392-450C-91F8-C0FAAE2F7946&device_id=1213461411426471&channel=App%20Store&mcc_mnc=46009&aid=2329&screen_width=750&openudid=2a2dff5023a900698c2f6558520bebc85f5872df&cdid=D638245D-B6DE-4395-907E-2082042FB592&os_api=18&ac=WIFI&os_version=14.3&client_niu_ready=0&device_platform=iphone&build_number=132004&iid=2216270053246359&device_type=iPhone12,1&idfa=D22DD681-6CEB-42F3-9077-6FE02150ECD0];
 
 const signkeyArr = [];
 let signkeyVal = "";
@@ -32,11 +32,11 @@ let SINGKEY = [];
 
 const taskheaderArr = [];
 let taskheaderVal = "";
-let TASKHEADER = [];
+let TASKHEADER = [&_dev=iPhone12,1&_devId=4a558f7b937fae53e9b125434a4a109281a8dece&_appver=8.7.1&_ifChId=&_isChId=1&_osVer=14.3&openid=oA0GbjsGpgLi0Rv5xSS_gDxJYyTc&fskey=v0aaf8a82206004f370514b304d57477&appid=wxcbc3ab3807acb685&access_token=41_fQ08mc0VUx7OTZAjRwzzkKCJEXALfTRwW84eM-jb5svc2YqeQ7v0mVI76uqHzsdQ9R-7doK9K_hiu1n-Eax2b4wnzTBO9bgZGOYtpFaEB9U&buildType=store&check=11&_idfa=D22DD681-6CEB-42F3-9077-6FE02150ECD0&lang=zh_CN];
 
 const taskkeyArr = [];
 let taskkeyVal = "";
-let TASKKEY = [];
+let TASKKEY = [pgv_pvid=3244437094; ts_last=/mp/v2/index.html; ts_sid=4103207880; ts_uid=7284412760];
 
 const wxtaskkeyArr = [];
 let wxtaskkeyVal = "";
