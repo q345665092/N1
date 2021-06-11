@@ -1,42 +1,42 @@
 /*
-tgchannel：https://t.me/ZhiYi_Script
-github：https://github.com/ZhiYi-N/script
-boxjs：https://raw.githubusercontent.com/ZhiYi-N/Private-Script/master/ZhiYi-N.boxjs.json
+tgchannel：https://t.me/Ariszy_Scripts
+github：https://github.com/Ariszy/script
+boxjs：https://raw.githubusercontent.com/Ariszy/Private-Script/master/Ariszy.boxjs.json
 转载留个名字，谢谢
 邀请码：190512
 谢谢
-作者：执意ZhiYi-N
+作者：执意Ariszy
 #看一个视频获取ck
 目前包含：
 看视频奖励、分享奖励
-点赞视频奖励、评论视频奖励（评论内容：真好哈）
-榜单投票、榜单抽奖
+点赞视频奖励、评论视频奖励
+榜单投票、榜单抽奖、脱口秀投票
 [mitm]
 hostname = ranlv.lvfacn.com
 #圈x 
 [rewrite local]
-https://ranlv.lvfacn.com/api.php/Common/pvlog url script-request-header https://raw.githubusercontent.com/ZhiYi-N/Private-Script/master/Scripts/ranlv.js
+https://ranlv.lvfacn.com/api.php/Common/pvlog url script-request-header https://raw.githubusercontent.com/Ariszy/Private-Script/master/Scripts/ranlv.js
 
 
 #loon
-http-request https://ranlv.lvfacn.com/api.php/Common/pvlog script-path=https://raw.githubusercontent.com/ZhiYi-N/Private-Script/master/Scripts/ranlv.js, requires-body=true, timeout=10, tag=燃旅视频
+http-request https://ranlv.lvfacn.com/api.php/Common/pvlog script-path=https://raw.githubusercontent.com/Ariszy/Private-Script/master/Scripts/ranlv.js, requires-body=true, timeout=10, tag=燃旅视频
 
 
 #surge
-燃旅视频 = type=http-request,pattern=^https://ranlv.lvfacn.com/api.php/Common/pvlog,requires-body=1,max-size=0,script-path=https://raw.githubusercontent.com/ZhiYi-N/Private-Script/master/Scripts/ranlv.js,script-update-interval=0
+燃旅视频 = type=http-request,pattern=^https://ranlv.lvfacn.com/api.php/Common/pvlog,requires-body=1,max-size=0,script-path=https://raw.githubusercontent.com/Ariszy/Private-Script/master/Scripts/ranlv.js,script-update-interval=0
 
 */
-const zhiyi = '燃旅视频'
-const $ = Env(zhiyi)
+const $ = new Env('燃旅视频')
 const notify = $.isNode() ?require('./sendNotify') : '';
-let status, videoid,myid;
+let status, videoid,myid,supportvideoid,supportrank,show;
 status = (status = ($.getval("rlstatus") || "1") ) > 1 ? `${status}` : ""; // 账号扩展字符
-const rlurlArr = [], rlheaderArr = [],rlbodyArr = []
+const rlurlArr = ['access_token=f2e1d57418bb3d6a0439b494f3468a75&client=1&member_id=195329&user_token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJSYW5sdiBKV1QiLCJpYXQiOjE2MTMzOTc0OTIsImV4cCI6MzIyNjc5NDk4NCwiYXVkIjoiUmFubHYiLCJzdWIiOiJSYW5sdiIsImRhdGEiOnsibWVtYmVyX2lkIjoxOTUzMjksImF2YXRhciI6Imh0dHA6XC9cL3Jhbmx2Lmx2ZmFjbi5jb21cL3N0YXRpY1wvbW9kdWxlXC9hZG1pblwvaW1nXC9kZWZhdWx0X2hlYWQuanBnIiwibmlja25hbWUiOiJcdTc1MjhcdTYyMzc0Mjg5NzM2MSIsIm1vYmlsZSI6IjE2NjAxMTMwMTE2In19.QA59sP7KN7TWqL-dZGsUOTODzNAUxUcSPGQvH8yQBrM&uuid=43AE89F0-4FE4-47D6-A841-066735904DEE&video_id=24512'], rlheaderArr = ['{"Cookie":"acw_tc=dd0f402116162414325808555eb6eb1bf3a74917b691ba50978e916624","Accept":"*/*","Connection":"keep-alive","Accept-Encoding":"gzip, deflate, br","Host":"ranlv.lvfacn.com","User-Agent":"ran lu shi pin/1.0.52 (iPhone; iOS 14.4.1; Scale/2.00)","Content-Length":"0","Accept-Language":"zh-Hans-CN;q=1"}'],rlbodyArr = []
 let rlurl = $.getdata('rlurl')
 let rlheader = $.getdata('rlheader')
 let rlbody = $.getdata('rlbody')
 let tz = ($.getval('tz') || '1');//0关闭通知，1默认开启
-const invite=0;//新用户自动邀请，0关闭，1默认开启
+let cash = ($.getval('rlcash') || '0')//默认不自动提现
+const invite=1;//新用户自动邀请，0关闭，1默认开启
 const logs =0;//0为关闭日志，1为开启
 var hour=''
 var minute=''
@@ -74,7 +74,7 @@ if ($.isNode()) {
   } else {
    rlheader = process.env.RLHEADER.split()
   };
-/*  if (process.env.RLBODY && process.env.RLBODY.indexOf('#') > -1) {
+  if (process.env.RLBODY && process.env.RLBODY.indexOf('#') > -1) {
    rlbody = process.env.RLBODY.split('#');
    console.log(`您选择的是用"#"隔开\n`)
   }
@@ -83,24 +83,7 @@ if ($.isNode()) {
    console.log(`您选择的是用换行隔开\n`)
   } else {
    rlbody = process.env.RLBODY.split()
-  };*/
-	
-   Object.keys(rlurl).forEach((item) => {
-        if (rlurl[item]) {
-          rlurlArr.push(rlurl[item])
-        }
-    });
-    Object.keys(rlheader).forEach((item) => {
-        if (rlheader[item]) {
-          rlheaderArr.push(rlheader[item])
-        }
-    });  	
-/*    Object.keys(rlbody).forEach((item) => {
-        if (rlbody[item]) {
-          rlbodyArr.push(rlbody[item])
-        }
-    });  */
-	
+  };
     console.log(`============ 脚本执行-国际标准时间(UTC)：${new Date().toLocaleString()}  =============\n`)
     console.log(`============ 脚本执行-北京时间(UTC+8)：${new Date(new Date().getTime() + 8 * 60 * 60 * 1000).toLocaleString()}  =============\n`)
  } else {
@@ -115,7 +98,7 @@ if ($.isNode()) {
   }
 }
 !(async () => {
-if (!rlheaderArr[0]) {
+if (!rlheaderArr[0] && !rlbodyArr[0] && !rlurlArr[0]) {
     $.msg($.name, '【提示】请先获取燃旅视频一cookie')
     return;
   }
@@ -126,7 +109,7 @@ if (!rlheaderArr[0]) {
       note =''
       rlurl = rlurlArr[i];
       rlheader = rlheaderArr[i];
-     // rlbody = rlbodyArr[i];
+      rlbody = rlbodyArr[i];
       $.index = i + 1;
       console.log(`\n开始【燃旅视频${$.index}】`)
       await checkVersion()
@@ -136,6 +119,7 @@ if (!rlheaderArr[0]) {
       await myVotes()
       await wiTask()
       await showmsg()
+      
   }
  }
 })()
@@ -146,11 +130,11 @@ function GetCookie() {
 if($request&&$request.url.indexOf("Common/pvlog")>=0) {
    const rlurl = $request.url.split('?')[1]
    if(rlurl)     $.setdata(rlurl,`rlurl${status}`)
-   $.log(`[${zhiyi}] 获取rlurl请求: 成功,rlurl: ${rlurl}`)
+   $.log(`[${Ariszy}] 获取rlurl请求: 成功,rlurl: ${rlurl}`)
    $.msg(`rlurl${status}: 成功🎉`, ``)
    const rlheader = JSON.stringify($request.headers)
     if(rlheader)    $.setdata(rlheader,`rlheader${status}`)
-    $.log(`[${zhiyi}] 获取rlheader请求: 成功,rlheader: ${rlheader}`)
+    $.log(`[${Ariszy}] 获取rlheader请求: 成功,rlheader: ${rlheader}`)
     $.msg(`rlheader${status}: 成功🎉`, ``)
 }
 }
@@ -230,6 +214,9 @@ let headers = rlheader.replace(/acw_tc=\w+/,'')
         myid = result.user.id
         console.log('🎈'+result.msg+' 邀请码：'+result.user.id+' 昵称：'+result.user.nickname+' 燃旅号：'+result.user.ranlvid +'\n')
         console.log('现有余额：'+result.user.balance + '提现额度：'+result.user.lines+'\n')
+        if(cash > 0 && Number(result.user.balance) >= cash && Number(result.user.lines) >= Number(result.user.balance)){
+        await wallet()
+        }
         message += '🎈'+result.msg+' 邀请码：'+result.user.id+' 昵称：'+result.user.nickname+' 燃旅号：'+result.user.ranlvid +'现有余额：'+result.user.balance + '提现额度：'+result.user.lines+'\n'
         }else{
         console.log('👀我也不知道\n')
@@ -484,7 +471,7 @@ async function wiTask(){
         }
         if(praiseArr.to_num >= praiseArr.num && commentArr.to_num >= commentArr.num && commentArr.to_num >= commentArr.num){
         note += '提现任务已完成'
-        $.log(zhiyi,'',note)
+        $.log(Ariszy,'',note)
         }
         }
         }catch(e) {
@@ -779,6 +766,76 @@ let url = rlurl.replace(/&video_id=\d{5}/,``)
     })
    })
 }
+//withdraw
+async function withdraw(){
+let url = rlurl.replace(/&video_id=\d{5}/,``)
+ return new Promise((resolve) => {
+    let withdraw_url = {
+   		url: `https://ranlv.lvfacn.com/api.php/Share/withdraw?&amount=${cash}&is_act=1&member_id=${myid}&${url}`,
+    	headers: JSON.parse(rlheader),
+    	}
+   $.post(withdraw_url,async(error, response, data) =>{
+    try{
+        const result = JSON.parse(data)
+        if(logs) $.log(data)
+        if(result.code == 0){
+        console.log(`成功提现${cash}元\n`)
+        message += `成功提现${cash}元\n`
+        }else{
+        console.log('👀'+result.msg+'\n')
+        }
+        }catch(e) {
+          $.logErr(e, response);
+      } finally {
+        resolve();
+      } 
+    })
+   })
+}
+//wallet
+async function wallet(){
+let url = rlurl.replace(/&video_id=\d{5}/,``)
+ return new Promise((resolve) => {
+    let wallet_url = {
+   		url: `https://ranlv.lvfacn.com/api.php/Share/wallet?&&list_rows=1&page=1&type=2&member_id=${myid}&${url}`,
+    	headers: JSON.parse(rlheader),
+    	}
+   $.post(wallet_url,async(error, response, data) =>{
+    try{
+        const result = JSON.parse(data)
+        if(logs) $.log(data)
+        if(result.code == 0){
+        let hour,minute,second,year,month,day;
+year = (new Date()).getFullYear();
+month = (new Date()).getMonth() + 1;
+day = (new Date()).getDate();
+if (month >= 1 && month <= 9) {
+            month = "0" + month;
+    }
+if (day >= 0 && day <= 9) {
+            day = "0" + day;
+   }
+hour = (new Date()).getHours();
+minute = (new Date()).getMinutes();
+second = (new Date()).getSeconds();
+let now = Number(year+month+day+hour+minute+second)
+let cashArr = result.data.data.data.find(item => item.description === '提现')
+let create_time = Number(cashArr.serialnum.match(/\d{14}/))
+if(now - create_time >= 1000000){
+$.log(`设置的提现金额为${cash},开始提现\n`)
+await withdraw()
+}
+        }else{
+        console.log('👀'+result.msg+'\n')
+        }
+        }catch(e) {
+          $.logErr(e, response);
+      } finally {
+        resolve();
+      } 
+    })
+   })
+}
 //sleep
 function sleep(time){
 	 return new Promise((resolve) => setTimeout(resolve,time));
@@ -807,7 +864,7 @@ if(tz==1){
    }else{
      $.log(message+note)
     //if ((hour == 12 && minute <= 20) || (hour == 23 && minute >= 40)) {
-       $.msg(zhiyi,'',message+note)
+       $.msg($.jsname,'',message+note)
 //}
 }
    }else{
@@ -815,3 +872,4 @@ if(tz==1){
     }
  }
 function Env(t,e){class s{constructor(t){this.env=t}send(t,e="GET"){t="string"==typeof t?{url:t}:t;let s=this.get;return"POST"===e&&(s=this.post),new Promise((e,i)=>{s.call(this,t,(t,s,r)=>{t?i(t):e(s)})})}get(t){return this.send.call(this.env,t)}post(t){return this.send.call(this.env,t,"POST")}}return new class{constructor(t,e){this.name=t,this.http=new s(this),this.data=null,this.dataFile="box.dat",this.logs=[],this.isMute=!1,this.isNeedRewrite=!1,this.logSeparator="\n",this.startTime=(new Date).getTime(),Object.assign(this,e),this.log("",`\ud83d\udd14${this.name}, \u5f00\u59cb!`)}isNode(){return"undefined"!=typeof module&&!!module.exports}isQuanX(){return"undefined"!=typeof $task}isSurge(){return"undefined"!=typeof $httpClient&&"undefined"==typeof $loon}isLoon(){return"undefined"!=typeof $loon}toObj(t,e=null){try{return JSON.parse(t)}catch{return e}}toStr(t,e=null){try{return JSON.stringify(t)}catch{return e}}getjson(t,e){let s=e;const i=this.getdata(t);if(i)try{s=JSON.parse(this.getdata(t))}catch{}return s}setjson(t,e){try{return this.setdata(JSON.stringify(t),e)}catch{return!1}}getScript(t){return new Promise(e=>{this.get({url:t},(t,s,i)=>e(i))})}runScript(t,e){return new Promise(s=>{let i=this.getdata("@chavy_boxjs_userCfgs.httpapi");i=i?i.replace(/\n/g,"").trim():i;let r=this.getdata("@chavy_boxjs_userCfgs.httpapi_timeout");r=r?1*r:20,r=e&&e.timeout?e.timeout:r;const[o,h]=i.split("@"),a={url:`http://${h}/v1/scripting/evaluate`,body:{script_text:t,mock_type:"cron",timeout:r},headers:{"X-Key":o,Accept:"*/*"}};this.post(a,(t,e,i)=>s(i))}).catch(t=>this.logErr(t))}loaddata(){if(!this.isNode())return{};{this.fs=this.fs?this.fs:require("fs"),this.path=this.path?this.path:require("path");const t=this.path.resolve(this.dataFile),e=this.path.resolve(process.cwd(),this.dataFile),s=this.fs.existsSync(t),i=!s&&this.fs.existsSync(e);if(!s&&!i)return{};{const i=s?t:e;try{return JSON.parse(this.fs.readFileSync(i))}catch(t){return{}}}}}writedata(){if(this.isNode()){this.fs=this.fs?this.fs:require("fs"),this.path=this.path?this.path:require("path");const t=this.path.resolve(this.dataFile),e=this.path.resolve(process.cwd(),this.dataFile),s=this.fs.existsSync(t),i=!s&&this.fs.existsSync(e),r=JSON.stringify(this.data);s?this.fs.writeFileSync(t,r):i?this.fs.writeFileSync(e,r):this.fs.writeFileSync(t,r)}}lodash_get(t,e,s){const i=e.replace(/\[(\d+)\]/g,".$1").split(".");let r=t;for(const t of i)if(r=Object(r)[t],void 0===r)return s;return r}lodash_set(t,e,s){return Object(t)!==t?t:(Array.isArray(e)||(e=e.toString().match(/[^.[\]]+/g)||[]),e.slice(0,-1).reduce((t,s,i)=>Object(t[s])===t[s]?t[s]:t[s]=Math.abs(e[i+1])>>0==+e[i+1]?[]:{},t)[e[e.length-1]]=s,t)}getdata(t){let e=this.getval(t);if(/^@/.test(t)){const[,s,i]=/^@(.*?)\.(.*?)$/.exec(t),r=s?this.getval(s):"";if(r)try{const t=JSON.parse(r);e=t?this.lodash_get(t,i,""):e}catch(t){e=""}}return e}setdata(t,e){let s=!1;if(/^@/.test(e)){const[,i,r]=/^@(.*?)\.(.*?)$/.exec(e),o=this.getval(i),h=i?"null"===o?null:o||"{}":"{}";try{const e=JSON.parse(h);this.lodash_set(e,r,t),s=this.setval(JSON.stringify(e),i)}catch(e){const o={};this.lodash_set(o,r,t),s=this.setval(JSON.stringify(o),i)}}else s=this.setval(t,e);return s}getval(t){return this.isSurge()||this.isLoon()?$persistentStore.read(t):this.isQuanX()?$prefs.valueForKey(t):this.isNode()?(this.data=this.loaddata(),this.data[t]):this.data&&this.data[t]||null}setval(t,e){return this.isSurge()||this.isLoon()?$persistentStore.write(t,e):this.isQuanX()?$prefs.setValueForKey(t,e):this.isNode()?(this.data=this.loaddata(),this.data[e]=t,this.writedata(),!0):this.data&&this.data[e]||null}initGotEnv(t){this.got=this.got?this.got:require("got"),this.cktough=this.cktough?this.cktough:require("tough-cookie"),this.ckjar=this.ckjar?this.ckjar:new this.cktough.CookieJar,t&&(t.headers=t.headers?t.headers:{},void 0===t.headers.Cookie&&void 0===t.cookieJar&&(t.cookieJar=this.ckjar))}get(t,e=(()=>{})){t.headers&&(delete t.headers["Content-Type"],delete t.headers["Content-Length"]),this.isSurge()||this.isLoon()?(this.isSurge()&&this.isNeedRewrite&&(t.headers=t.headers||{},Object.assign(t.headers,{"X-Surge-Skip-Scripting":!1})),$httpClient.get(t,(t,s,i)=>{!t&&s&&(s.body=i,s.statusCode=s.status),e(t,s,i)})):this.isQuanX()?(this.isNeedRewrite&&(t.opts=t.opts||{},Object.assign(t.opts,{hints:!1})),$task.fetch(t).then(t=>{const{statusCode:s,statusCode:i,headers:r,body:o}=t;e(null,{status:s,statusCode:i,headers:r,body:o},o)},t=>e(t))):this.isNode()&&(this.initGotEnv(t),this.got(t).on("redirect",(t,e)=>{try{if(t.headers["set-cookie"]){const s=t.headers["set-cookie"].map(this.cktough.Cookie.parse).toString();s&&this.ckjar.setCookieSync(s,null),e.cookieJar=this.ckjar}}catch(t){this.logErr(t)}}).then(t=>{const{statusCode:s,statusCode:i,headers:r,body:o}=t;e(null,{status:s,statusCode:i,headers:r,body:o},o)},t=>{const{message:s,response:i}=t;e(s,i,i&&i.body)}))}post(t,e=(()=>{})){if(t.body&&t.headers&&!t.headers["Content-Type"]&&(t.headers["Content-Type"]="application/x-www-form-urlencoded"),t.headers&&delete t.headers["Content-Length"],this.isSurge()||this.isLoon())this.isSurge()&&this.isNeedRewrite&&(t.headers=t.headers||{},Object.assign(t.headers,{"X-Surge-Skip-Scripting":!1})),$httpClient.post(t,(t,s,i)=>{!t&&s&&(s.body=i,s.statusCode=s.status),e(t,s,i)});else if(this.isQuanX())t.method="POST",this.isNeedRewrite&&(t.opts=t.opts||{},Object.assign(t.opts,{hints:!1})),$task.fetch(t).then(t=>{const{statusCode:s,statusCode:i,headers:r,body:o}=t;e(null,{status:s,statusCode:i,headers:r,body:o},o)},t=>e(t));else if(this.isNode()){this.initGotEnv(t);const{url:s,...i}=t;this.got.post(s,i).then(t=>{const{statusCode:s,statusCode:i,headers:r,body:o}=t;e(null,{status:s,statusCode:i,headers:r,body:o},o)},t=>{const{message:s,response:i}=t;e(s,i,i&&i.body)})}}time(t){let e={"M+":(new Date).getMonth()+1,"d+":(new Date).getDate(),"H+":(new Date).getHours(),"m+":(new Date).getMinutes(),"s+":(new Date).getSeconds(),"q+":Math.floor(((new Date).getMonth()+3)/3),S:(new Date).getMilliseconds()};/(y+)/.test(t)&&(t=t.replace(RegExp.$1,((new Date).getFullYear()+"").substr(4-RegExp.$1.length)));for(let s in e)new RegExp("("+s+")").test(t)&&(t=t.replace(RegExp.$1,1==RegExp.$1.length?e[s]:("00"+e[s]).substr((""+e[s]).length)));return t}msg(e=t,s="",i="",r){const o=t=>{if(!t)return t;if("string"==typeof t)return this.isLoon()?t:this.isQuanX()?{"open-url":t}:this.isSurge()?{url:t}:void 0;if("object"==typeof t){if(this.isLoon()){let e=t.openUrl||t.url||t["open-url"],s=t.mediaUrl||t["media-url"];return{openUrl:e,mediaUrl:s}}if(this.isQuanX()){let e=t["open-url"]||t.url||t.openUrl,s=t["media-url"]||t.mediaUrl;return{"open-url":e,"media-url":s}}if(this.isSurge()){let e=t.url||t.openUrl||t["open-url"];return{url:e}}}};if(this.isMute||(this.isSurge()||this.isLoon()?$notification.post(e,s,i,o(r)):this.isQuanX()&&$notify(e,s,i,o(r))),!this.isMuteLog){let t=["","==============\ud83d\udce3\u7cfb\u7edf\u901a\u77e5\ud83d\udce3=============="];t.push(e),s&&t.push(s),i&&t.push(i),console.log(t.join("\n")),this.logs=this.logs.concat(t)}}log(...t){t.length>0&&(this.logs=[...this.logs,...t]),console.log(t.join(this.logSeparator))}logErr(t,e){const s=!this.isSurge()&&!this.isQuanX()&&!this.isLoon();s?this.log("",`\u2757\ufe0f${this.name}, \u9519\u8bef!`,t.stack):this.log("",`\u2757\ufe0f${this.name}, \u9519\u8bef!`,t)}wait(t){return new Promise(e=>setTimeout(e,t))}done(t={}){const e=(new Date).getTime(),s=(e-this.startTime)/1e3;this.log("",`\ud83d\udd14${this.name}, \u7ed3\u675f! \ud83d\udd5b ${s} \u79d2`),this.log(),(this.isSurge()||this.isQuanX()||this.isLoon())&&$done(t)}}(t,e)}
+x1
