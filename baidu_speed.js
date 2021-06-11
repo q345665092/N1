@@ -10,13 +10,13 @@ https:\/\/haokan\.baidu\.com\/activity\/h5\/vault\?productid=\d url script-reque
 ~~~~~~~~~~~~~~~~
 */
 const $ = new Env('百度极速版提现')
-let CookieArr = ['SG_FW_VER=1.26.3; SP_FW_VER=3.230.34; BDUSS=RqeFZIY3YybndJb1FrNW9oYlRITDVoNFJ3NXV6TnpMVTBPbmhYZVlEdjlHZzlmSVFBQUFBJCQAAAAAAAAAAAEAAACbZM9Yu9GQRQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAP2N5179jedeSl; BAIDUID=3E9211C29D08EFBB382BBF8682C1D851:FG=1; Hm_lvt_98b9d8c2fd6608d564bf2ac2ae642948=1601082010; BAIDU_WISE_UID=wapp_1592902876326_14'],cashArr=[];
+let CookieArr = ['SG_FW_VER=1.26.3; SP_FW_VER=3.230.34; BDUSS=RqeFZIY3YybndJb1FrNW9oYlRITDVoNFJ3NXV6TnpMVTBPbmhYZVlEdjlHZzlmSVFBQUFBJCQAAAAAAAAAAAEAAACbZM9Yu9GQRQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAP2N5179jedeSl; BAIDUID=3E9211C29D08EFBB382BBF8682C1D851:FG=1; Hm_lvt_98b9d8c2fd6608d564bf2ac2ae642948=1601082010; BAIDU_WISE_UID=wapp_1592902876326_14'],cashArr=['true'];
 const notify = $.isNode() ? require('./sendNotify') : '';
 const baiducks = $.getdata('bdspeed')
 let baiducash = $.getdata(`cash_baidu`);
 let shower = $.getdata('on_baidu')||"true";
 
-let taskON = $.getdata(`task_baidu`)||"false"//除提现和兑换外其他任务开关;
+let taskON = $.getdata(`task_baidu`)||"true"//除提现和兑换外其他任务开关;
 let isblack = "false";
 let UA = $.getdata('bd_Agent')||'Mozilla/5.0 (iPhone; CPU iPhone OS 14_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148 SP-engine/0.0.0 matrixstyle/0 matrixstyle/0 info baiduboxapp/5.3.0.10 (Baidu; P2 14.3)';
 
